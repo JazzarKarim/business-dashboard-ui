@@ -124,8 +124,12 @@ export const useBcrosBusinessBootstrap = defineStore('bcros/businessBootstrap', 
 
   const errors: Ref<ErrorI[]> = ref([])
 
+  // Temp bootstrap ids are "T" + 9 chars (e.g. Tabc12XyZ9). Real tramways are TMY + 7 digits
+  // (e.g. TMY0000008) — exclude only that shape so random temps like TMYHLpcaq7 stay temp.
   const tempRegIdRgx = /^T\w{9}$/
-  const checkIsTempReg = (identifier: string) => tempRegIdRgx.test(identifier)
+  const tramwayIdRgx = /^TMY\d{7}$/
+  const checkIsTempReg = (identifier: string) =>
+    tempRegIdRgx.test(identifier) && !tramwayIdRgx.test(identifier)
 
   const getBootstrapFiling = async (identifier: string, params?: object) => {
     return await useBcrosLegalApi().fetch<BootstrapFilingApiResponseI>(
